@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unity打包编辑器 - 界面设计模板</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', Arial, sans-serif;
+            background: #2b2b2b;
+            color: #cccccc;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .editor-window {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #3c3c3c;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+
+        .editor-titlebar {
+            background: linear-gradient(180deg, #6e6e6e 0%, #4a4a4a 100%);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2b2b2b;
+        }
+
+        .editor-titlebar h1 {
+            font-size: 14px;
+            color: #cccccc;
+            font-weight: normal;
+        }
+
+        .editor-titlebar .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .window-controls span {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .btn-close { background: #ff5f57; }
+        .btn-minimize { background: #ffbd2e; }
+        .btn-maximize { background: #28ca42; }
+
+        .editor-content {
+            padding: 20px;
+        }
+
+        /* 上层 - 平台和版本设置 */
+        .settings-section {
+            background: #2b2b2b;
+            border: 1px solid #515151;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .settings-section h2 {
+            font-size: 13px;
+            color: #cccccc;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #515151;
+        }
+
+        .settings-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 12px;
+            align-items: center;
+        }
+
+        .setting-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .setting-item label {
+            font-size: 12px;
+            color: #cccccc;
+            min-width: 80px;
+        }
+
+        .setting-item select,
+        .setting-item input {
+            flex: 1;
+            background: #1e1e1e;
+            border: 1px solid #515151;
+            color: #cccccc;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+            outline: none;
+        }
+
+        .setting-item select:focus,
+        .setting-item input:focus {
+            border-color: #007acc;
+        }
+
+        /* 打包模式选择 */
+        .build-mode-section {
+            background: #2b2b2b;
+            border: 1px solid #515151;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .build-mode-section h2 {
+            font-size: 13px;
+            color: #cccccc;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #515151;
+        }
+
+        .mode-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .mode-btn {
+            background: #1e1e1e;
+            border: 1px solid #515151;
+            color: #cccccc;
+            padding: 8px 16px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .mode-btn:hover {
+            background: #3e3e3e;
+            border-color: #007acc;
+        }
+
+        .mode-btn.active {
+            background: #007acc;
+            border-color: #007acc;
+            color: white;
+        }
+
+        /* 下层 - 文件夹控制器 */
+        .folder-controller-section {
+            background: #2b2b2b;
+            border: 1px solid #515151;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .folder-controller-section h2 {
+            font-size: 13px;
+            color: #cccccc;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #515151;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .folder-tree {
+            background: #1e1e1e;
+            border: 1px solid #515151;
+            border-radius: 3px;
+            padding: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .tree-node {
+            margin-left: 20px;
+        }
+
+        .tree-item {
+            display: flex;
+            align-items: center;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+            margin: 2px 0;
+            font-size: 12px;
+        }
+
+        .tree-item:hover {
+            background: #3e3e3e;
+        }
+
+        .tree-item.selected {
+            background: #094771;
+        }
+
+        .tree-icon {
+            margin-right: 8px;
+            font-size: 14px;
+        }
+
+        .tree-toggle {
+            margin-right: 5px;
+            cursor: pointer;
+            color: #808080;
+            width: 16px;
+            text-align: center;
+        }
+
+        .bundle-tag {
+            margin-left: auto;
+            padding: 2px 8px;
+            background: #007acc;
+            color: white;
+            border-radius: 3px;
+            font-size: 11px;
+        }
+
+        .bundle-tag.none {
+            background: #808080;
+        }
+
+        /* 规则配置面板 */
+        .rule-config-section {
+            background: #2b2b2b;
+            border: 1px solid #515151;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .rule-config-section h2 {
+            font-size: 13px;
+            color: #cccccc;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #515151;
+        }
+
+        .rule-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .rule-option {
+            background: #1e1e1e;
+            border: 1px solid #515151;
+            border-radius: 3px;
+            padding: 12px;
+        }
+
+        .rule-option h3 {
+            font-size: 12px;
+            color: #cccccc;
+            margin-bottom: 8px;
+        }
+
+        .rule-option p {
+            font-size: 11px;
+            color: #808080;
+            line-height: 1.4;
+        }
+
+        /* 操作按钮区域 */
+        .action-section {
+            background: #2b2b2b;
+            border: 1px solid #515151;
+            border-radius: 5px;
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .action-btn {
+            background: #1e1e1e;
+            border: 1px solid #515151;
+            color: #cccccc;
+            padding: 8px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #3e3e3e;
+        }
+
+        .action-btn.primary {
+            background: #007acc;
+            border-color: #007acc;
+            color: white;
+        }
+
+        .action-btn.primary:hover {
+            background: #1a8ad4;
+        }
+
+        .action-btn.danger {
+            background: #d32f2f;
+            border-color: #d32f2f;
+            color: white;
+        }
+
+        .action-btn.danger:hover {
+            background: #e53935;
+        }
+
+        .action-btn.success {
+            background: #2d8a4e;
+            border-color: #3aa864;
+            color: white;
+        }
+
+        .action-btn.success:hover {
+            background: #3aa864;
+        }
+
+        /* 配置列表样式 */
+        .config-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .config-item {
+            background: #1e1e1e;
+            border: 1px solid #515151;
+            border-radius: 5px;
+            padding: 15px;
+        }
+
+        .config-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #515151;
+        }
+
+        .config-item-title {
+            font-size: 12px;
+            color: #cccccc;
+            font-weight: bold;
+        }
+
+        .config-item-delete {
+            background: #d32f2f;
+            border: none;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        .config-item-delete:hover {
+            background: #e53935;
+        }
+
+        .config-fields {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .config-field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .config-field label {
+            font-size: 11px;
+            color: #808080;
+        }
+
+        .config-field input,
+        .config-field select {
+            background: #2b2b2b;
+            border: 1px solid #515151;
+            color: #cccccc;
+            padding: 6px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+            outline: none;
+        }
+
+        .config-field input:focus,
+        .config-field select:focus {
+            border-color: #007acc;
+        }
+
+        .add-btn {
+            background: #007acc;
+            border: none;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: background 0.2s;
+        }
+
+        .add-btn:hover {
+            background: #1a8ad4;
+        }
+
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1e1e1e;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #515151;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #666666;
+        }
+    </style>
+</head>
+<body>
+    <div class="editor-window">
+        <!-- 标题栏 -->
+        <div class="editor-titlebar">
+            <h1>📦 AssetBundle Packer - 打包编辑器</h1>
+            <div class="window-controls">
+                <span class="btn-minimize"></span>
+                <span class="btn-maximize"></span>
+                <span class="btn-close"></span>
+            </div>
+        </div>
+
+        <div class="editor-content">
+            <!-- 上层：目标平台和版本号设置 -->
+            <div class="settings-section">
+                <h2>⚙️ 基本设置</h2>
+                <div class="settings-row">
+                    <div class="setting-item">
+                        <label title="构建目标平台，决定 BuildPipeline 使用的 BuildTarget。">目标平台:</label>
+                        <select>
+                            <option>Windows</option>
+                            <option>iOS</option>
+                            <option>Android</option>
+                            <option>macOS</option>
+                            <option>WebGL</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="settings-row">
+                    <div class="setting-item" style="flex: 1;">
+                        <label title="应用版本号（x.y.z），写入资源清单 catalog.bytes 的 version 字段。">版本号:</label>
+                        <input type="text" id="versionNumber" value="1.0.0" placeholder="输入版本号" style="flex: 1;">
+                        <button title="版本号 patch 位 +1，同时 buildNumber +1。" style="padding: 5px 15px; background: #007acc; border: 1px solid #007acc; color: white; border-radius: 3px; cursor: pointer; font-size: 12px;" onclick="updateVersion()">📌 更新版本号</button>
+                    </div>
+                    <div class="setting-item">
+                        <label title="递增构建编号，写入资源清单 catalog.bytes 的 buildNumber 字段。">构建号:</label>
+                        <input type="text" id="buildNumber" value="1001" placeholder="构建号">
+                    </div>
+                </div>
+                <div class="settings-row">
+                    <div class="setting-item" style="flex: 1;">
+                        <label title="首包（真机模式）下 AB 包的输出目录，默认 Assets/StreamingAssets。">首包输出路径:</label>
+                        <div style="display: flex; flex: 1; gap: 5px;">
+                            <input type="text" value="Assets/StreamingAssets" placeholder="真机首包 AB 输出目录" style="flex: 1;">
+                            <button style="padding: 5px 15px; background: #515151; border: 1px solid #666; color: #cccccc; border-radius: 3px; cursor: pointer; font-size: 12px;" onclick="alert('打开文件夹选择对话框')">📁 浏览</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="settings-row">
+                    <div class="setting-item" style="flex: 1;">
+                        <label title="CDN联网模式下 AB 包的输出目录，默认 Bundles/CDN（项目根相对路径）。">联网 CDN 输出路径:</label>
+                        <div style="display: flex; flex: 1; gap: 5px;">
+                            <input type="text" value="Bundles/CDN" placeholder="CDN 热更 AB 输出目录" style="flex: 1;">
+                            <button style="padding: 5px 15px; background: #515151; border: 1px solid #666; color: #cccccc; border-radius: 3px; cursor: pointer; font-size: 12px;" onclick="alert('打开文件夹选择对话框')">📁 浏览</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="settings-row">
+                    <div class="setting-item">
+                        <label title="映射 BuildAssetBundleOptions：LZMA / LZ4 分块 / 不压缩。">压缩格式:</label>
+                        <select>
+                            <option>LZ4Chunk</option>
+                            <option>LZMA</option>
+                            <option>Uncompressed</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="folder-controller-section" id="customPackingSection">
+                <h2>
+                    📦 资源打包配置
+                    <button class="add-btn" onclick="addConfigItem()" style="margin-left: 10px; padding: 4px 12px; background: #007acc; border: none; color: white; border-radius: 3px; cursor: pointer; font-size: 11px;">+ 添加配置</button>
+                </h2>
+                <div class="settings-row" style="margin-bottom: 12px;">
+                    <div class="setting-item">
+                        <label title="仅自定义打包时显示；新增配置项的默认 resourcePriority。">默认资源优先级:</label>
+                        <select>
+                            <option>Normal</option>
+                            <option>Critical</option>
+                            <option>High</option>
+                            <option>Low</option>
+                            <option>Optional</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="config-list" id="configList">
+                    <!-- 配置项会动态添加到这里 -->
+                </div>
+            </div>
+
+            <!-- 规则配置面板 -->
+            <div class="rule-config-section">
+                <h2>📋 打包规则配置</h2>
+                <div class="settings-row">
+                    <div class="setting-item" style="flex: 1;">
+                        <label id="packingRuleLabel" title="默认打包：指定目录下每个第一级子文件夹各打一个 AB 包。全局打包模式默认为「首包（真机模式）」。">打包规则:</label>
+                        <select id="packingRule" onchange="changePackingRule()" title="默认打包：指定目录下每个第一级子文件夹各打一个 AB 包。全局打包模式默认为「首包（真机模式）」。">
+                            <option value="default">默认打包 - 按第一级子文件夹打包</option>
+                            <option value="detailed">细化打包 - 按所有子文件夹打包</option>
+                            <option value="custom">自定义打包 - 手动配置每个资源</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="settings-row" style="margin-top: 10px;">
+                    <div class="setting-item" style="flex: 1;">
+                        <label id="buildModeLabel" title="默认打包 / 细化打包时默认为「首包（真机模式）」。首包（真机模式）：AB 输出到首包输出路径（默认 StreamingAssets）。">打包模式:</label>
+                        <select id="buildMode" title="默认打包 / 细化打包时默认为「首包（真机模式）」。首包（真机模式）：AB 输出到首包输出路径（默认 StreamingAssets）。">
+                            <option value="editor">编辑器测试</option>
+                            <option value="device" selected>首包（真机模式）</option>
+                            <option value="cdn">CDN联网</option>
+                            <option value="dlc">DLC分包</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="settings-row" style="margin-top: 10px;">
+                    <div class="setting-item" style="flex: 1;">
+                        <label title="Default / Detailed 规则下扫描并打包资源的根目录。">目标资源目录:</label>
+                        <div style="display: flex; flex: 1; gap: 5px;">
+                            <input type="text" id="targetDirectory" placeholder="选择资源根目录" value="Assets/AssetBundle" style="flex: 1;">
+                            <button style="padding: 5px 15px; background: #515151; border: 1px solid #666; color: #cccccc; border-radius: 3px; cursor: pointer; font-size: 12px;" onclick="alert('打开文件夹选择对话框')">📁 浏览</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 操作按钮 -->
+            <div class="action-section">
+                <button class="action-btn success" title="对比 BuildCache，无源变更时跳过 Unity 构建；仍更新清单/Manifest。">增量打包</button>
+                <button class="action-btn primary" title="ForceRebuild 全量重建并刷新 BuildCache。">覆盖打包</button>
+                <button class="action-btn danger" title="清理首包/CDN 输出、清单与 BuildCache。">清理打包</button>
+                <button class="action-btn" title="将当前配置写入 DefaultBuildSetting.asset。">保存规则</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let configCount = 0;
+
+        function getBuildModeDescription(mode) {
+            switch (mode) {
+                case 'device':
+                    return '首包（真机模式）：AB 输出到首包输出路径（默认 StreamingAssets）。';
+                case 'cdn':
+                    return 'CDN联网：AB 输出到联网 CDN 输出路径（默认 Bundles/CDN）。';
+                case 'dlc':
+                    return 'DLC分包：输出到 {平台}/DLC_{id}/（Bundles + catalog.fragment.bytes）；运行时由 ContentPackageService 挂载，商店 Gate 待接 SDK。';
+                default:
+                    return '编辑器测试：不生成 .bundle，仅更新清单（模拟阶段）。';
+            }
+        }
+
+        function getBuildModeFieldTooltip(mode) {
+            return '默认打包 / 细化打包时默认为「首包（真机模式）」，可按需切换。' + getBuildModeDescription(mode);
+        }
+
+        function getRuleDescription(rule) {
+            switch (rule) {
+                case 'detailed':
+                    return '细化打包：指定目录下每一个子文件夹（含嵌套）各打一个 AB 包。全局打包模式默认为「首包（真机模式）」。';
+                case 'custom':
+                    return '自定义打包：每项配置的打包模式决定 AB 输出位置，可自由添加配置项。';
+                default:
+                    return '默认打包：指定目录下每个第一级子文件夹各打一个 AB 包。全局打包模式默认为「首包（真机模式）」。';
+            }
+        }
+
+        function updateBuildModeTooltip() {
+            const mode = document.getElementById('buildMode').value;
+            const tooltip = getBuildModeFieldTooltip(mode);
+            document.getElementById('buildMode').title = tooltip;
+            document.getElementById('buildModeLabel').title = tooltip;
+        }
+
+        document.getElementById('buildMode').addEventListener('change', updateBuildModeTooltip);
+
+        // 添加配置项
+        function addConfigItem() {
+            configCount++;
+            const configList = document.getElementById('configList');
+            
+            const configItem = document.createElement('div');
+            configItem.className = 'config-item';
+            configItem.id = 'config-' + configCount;
+            
+            configItem.innerHTML = `
+                <div class="config-item-header">
+                    <span class="config-item-title">配置项 #${configCount}</span>
+                    <button class="config-item-delete" onclick="removeConfigItem('config-${configCount}')">删除</button>
+                </div>
+                <div class="config-fields">
+                    <div class="config-field" style="grid-column: 1 / -1;">
+                        <label title="文件夹路径：打包该目录下全部资源；单文件路径：仅打包该资源。">资源路径</label>
+                        <div style="display: flex; gap: 5px;">
+                            <input type="text" class="config-asset-path" placeholder="选择或输入资源路径" value="Assets/" style="flex: 1;">
+                            <button type="button" style="padding: 5px 15px; background: #515151; border: 1px solid #666; color: #cccccc; border-radius: 3px; cursor: pointer; font-size: 12px; white-space: nowrap;" onclick="alert('打开文件夹选择对话框')">📁 浏览</button>
+                        </div>
+                    </div>
+                    <div class="config-field">
+                        <label title="资源路径为文件夹时生效；与全局默认/细化打包语义一致。单文件路径时忽略。">文件夹打包粒度</label>
+                        <select>
+                            <option selected>整个文件夹一个包</option>
+                            <option>第一级子文件夹各一个包</option>
+                            <option>每一个子文件夹（含嵌套）各一个包</option>
+                        </select>
+                    </div>
+                    <div class="config-field">
+                        <label title="「整个文件夹一个包」或单文件时使用；子文件夹粒度下由文件夹名自动生成。">包名 (Bundle Name)</label>
+                        <input type="text" placeholder="输入AssetBundle名称" value="bundle_${configCount}">
+                    </div>
+                    <div class="config-field">
+                        <label title="决定该项 AB 的输出位置：编辑器测试 / 首包（真机模式） / CDN联网 / DLC分包。">打包模式</label>
+                        <select title="决定该项 AB 的输出位置：编辑器测试 / 首包（真机模式） / CDN联网 / DLC分包。">
+                            <option>编辑器测试</option>
+                            <option>首包（真机模式）</option>
+                            <option>CDN联网</option>
+                            <option>DLC分包</option>
+                        </select>
+                    </div>
+                    <div class="config-field">
+                        <label title="该项资源优先级；聚合到 Bundle 的 resourcePriority（取最高）。">资源优先级</label>
+                        <select>
+                            <option value="high">高优先级</option>
+                            <option value="normal" selected>普通优先级</option>
+                            <option value="low">低优先级</option>
+                            <option value="optional">可选下载</option>
+                        </select>
+                    </div>
+                    <div class="config-field">
+                        <label title="可选的配置说明，仅用于编辑器内标注。">备注说明</label>
+                        <input type="text" placeholder="可选的配置说明">
+                    </div>
+                </div>
+            `;
+            
+            configList.appendChild(configItem);
+        }
+
+        // 删除配置项
+        function removeConfigItem(id) {
+            const item = document.getElementById(id);
+            if (item) {
+                item.remove();
+            }
+        }
+
+        // 更新版本号
+        function updateVersion() {
+            const versionInput = document.getElementById('versionNumber');
+            const buildInput = document.getElementById('buildNumber');
+            const version = versionInput.value;
+            
+            // 解析版本号 (例如: 1.0.0)
+            const parts = version.split('.');
+            if (parts.length >= 3) {
+                let major = parseInt(parts[0]) || 0;
+                let minor = parseInt(parts[1]) || 0;
+                let patch = parseInt(parts[2]) || 0;
+                
+                // 最后一位进一
+                patch++;
+                
+                // 更新版本号
+                versionInput.value = `${major}.${minor}.${patch}`;
+                
+                // 构建号也进一
+                const buildNum = parseInt(buildInput.value) || 0;
+                buildInput.value = buildNum + 1;
+            } else {
+                alert('版本号格式不正确，应为 x.y.z 格式');
+            }
+        }
+
+        // 切换打包规则
+        function changePackingRule() {
+            const rule = document.getElementById('packingRule').value;
+            const configSection = document.querySelector('.folder-controller-section');
+            const ruleTooltip = getRuleDescription(rule);
+
+            document.getElementById('packingRule').title = ruleTooltip;
+            document.getElementById('packingRuleLabel').title = ruleTooltip;
+
+            switch(rule) {
+                case 'default':
+                    configSection.style.display = 'none';
+                    document.getElementById('buildMode').value = 'device';
+                    updateBuildModeTooltip();
+                    break;
+                case 'detailed':
+                    configSection.style.display = 'none';
+                    document.getElementById('buildMode').value = 'device';
+                    updateBuildModeTooltip();
+                    break;
+                case 'custom':
+                    configSection.style.display = 'block';
+                    break;
+            }
+        }
+
+        // 页面加载时添加两个示例配置，并隐藏自定义配置区域
+        window.addEventListener('DOMContentLoaded', function() {
+            addConfigItem();
+            addConfigItem();
+            changePackingRule();
+            updateBuildModeTooltip();
+        });
+    </script>
+</body>
+</html>
