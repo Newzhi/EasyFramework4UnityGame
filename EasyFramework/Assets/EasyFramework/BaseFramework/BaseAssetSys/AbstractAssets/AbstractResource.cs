@@ -9,17 +9,17 @@ internal class AbstractResource : IAssetHandle
 {
     #region 变量定义
 
-    private string assetKey;
-    private string bundleName;
-    private string assetName;
-    private string catalogueAssetPath;
-    private string loadPath;
-    private Object asset;
-    private int Ref;
+    private string assetKey;//资源唯一标识
+    private string bundleName;//资源所在包名
+    private string assetName;//资源名
+    private string catalogueAssetPath;//资源在清单中的路径
+    private string loadPath;//资源加载路径
+    private Object asset;//资源对象 
+    private int Ref;//资源引用计数
     private bool isLoading;
-    private AssetSource loadedSource;
-    private readonly List<string> acquiredBundleNames = new List<string>();
-    internal Action onUnLoad;
+    private AssetSource loadedSource;//资源加载源
+    private readonly List<string> acquiredBundleNames = new List<string>();//资源加载依赖的包名
+    internal Action onUnLoad;//资源卸载回调
 
     #endregion
 
