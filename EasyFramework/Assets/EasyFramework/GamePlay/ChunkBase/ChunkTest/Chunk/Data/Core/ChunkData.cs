@@ -21,6 +21,8 @@ using UnityEngine;
 
 #region 核心类型（坐标 / 边界 / 状态）
 
+
+
 /// <summary>
 /// 职责：描述区块当前生命周期状态（是否已加载、是否正在使用）
 /// TODO ：明确各个状态
@@ -36,6 +38,25 @@ public enum ChunkState
     // 活跃状态（例如在视距内、参与渲染/交互）。
     Active,
 }
+
+
+/// <summary>
+/// 区块的"激活级别"（MVP 精简版）。
+///
+/// 偏序：None &lt; Loaded。
+///
+/// 语义：
+/// - None：未加载（默认零值）
+/// - Loaded：payload 已在内存中
+///
+/// 扩展说明：原 Generated / Rendered 曾为双窗口 + Presenter 预留，扩展场景表现层时可恢复。
+/// </summary>
+public enum ChunkActivationLevel : byte
+{
+    None = 0,
+    Loaded = 1,
+}
+
 
 // 职责：定义区块在网格中的身份坐标，并提供可哈希的唯一 ID。
 public readonly struct ChunkCoord : IEquatable<ChunkCoord>
